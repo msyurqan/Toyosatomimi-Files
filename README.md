@@ -1,4 +1,4 @@
-# Current Version : 1.0.0
+# Current Version : 3.0.0
 
 
 Toyosatomimi Files CMS (ToyoCMS) is a CMS Files Hosting has basic power to Upload,Delete and Management user.Use HTML5,PHP CSS3 Stylesheet make ToyoCMS has simple template and powerfull CMS.
