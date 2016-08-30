@@ -1,4 +1,6 @@
-# Current Version : 3.0.0
+
+
+# Current Version : 3.0.1
 
 
 Toyosatomimi Files CMS (ToyoCMS) is a CMS Files Hosting has basic power to Upload,Delete and Management user.Use HTML5,PHP CSS3 Stylesheet make ToyoCMS has simple template and powerfull CMS.
@@ -15,35 +17,15 @@ Troubleshooting or some ideas you can share on Forum
 
     http://www.toyo-cms.forumotion.com
 
-What we goal:
-- [X] First Step
-- [X] Upload function and account system
-- [X] Support Android and other platfom
-- [X] Thumbs for most picture like JPG,PNG or other.
-- [X] Admin Panel - Process
-- [X] MP3 Tag Script Implement
-- [X] Improve most security on account - (HTTPS is best way)
-
 ---------------
 
-# Changelog
+# Current features
 
-v1.0.0
-- First time add on Github
-
-v2.0.0
-- Improve Security
-- Admin Panel
-- Metro-UI Style (Sergev) on CONTRIBUTION
-
-v3.0.0
-- MVC System
-- Improve Security Dratiscly
-- Define Variable
-- Material Design Style
-- Responsive
-
----------------------------------------
+- Upload and Share
+- Materialize Design (Google™)
+- Responsive Design ( For All Devices )
+- Layer Website ( Something like Blog / Wordpress )
+- And Many more not listed...
 
 # Contribution
 
