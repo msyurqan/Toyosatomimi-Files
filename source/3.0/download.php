@@ -1,29 +1,33 @@
 <?php
-include 'includes/miko.functions.php';
-include 'includes/miko.inc.php';
-
-	$username = get_username();
-	$pic = "miko.png"; //sementara
-
-	$err = $_GET['err'];
-	if (isset($err)) {
-		switch ($err) {			
-			case "invalid-request";
-				$title = "Invalid Request";
-				$content = "The correct request were not sent to our server, Please retry again.";
-				break;
-			case "closed-temporary";
-				$title = "Closed Temporary";
-				$content = "We are sorry. Server is down for an unexpected time. Please come back soon...";
-				break;
-			case "404";
-				$title = "File not found";
-				$content = "File you looking for is not found on our server, It might be deleted or changed.";
-				break;
-		}
+	include 'includes/miko.global.php';
+	include 'includes/miko.inc.php';
+	
+	$linkdown = $_GET['d'];
+	$try = $_GET['retry'];
+	$pass_input = $_POST['x'];
+	
+	$try++;
+	if ($try>5) { //If users try more than 5 times (Is that's robot?) you can add CAPTCHA HERE
+		// Add Code Here!
+	}
+	
+	$linkdata = mysql_query("SELECT * FROM miko_files WHERE downloadlink = '$linkdown'");
+	$meta = mysql_fetch_assoc($linkdata);
+	$password = $meta['password']; // Get Password file from database
+	
+	if (mysql_num_rows($linkdata) > 0) { // Check File is Avaliable / Deleted
+		// Get All Info of file, you can add your costumize tables on here!
+		$file_size = $meta['size'];
+		$user_owner = $meta['ownerfile'];
+		$file_name = $meta['filename'];
+		$source_file = $meta['source'];
+		$date_created = $meta['datecreated'];
+		$hit = $meta['hit'];
+		
+		
+		
 	} else {
-		$title = "Unexpected Error";
-		$content = "Error occured when your trying something, if you sure this error our server. Please contact administrator.";
+		// header('error?err=404');
 	}
 ?>
 <!DOCTYPE html>
@@ -92,38 +96,55 @@ include 'includes/miko.inc.php';
       <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">Menu</i></a>
     </div>
   </nav>
-  <div class="section no-pad-bot" id="index-banner">
-    <div class="container">
-      <br><br>
-      <h1 class="header orange-text light"><?php echo $title; ?></h1>
-      <div class="row">
-        <h5 class="header col s12"><?php echo $content; ?></h5>
-      </div>
-      <br><br>
-    </div>
-  </div>
-  <br><br><br><br><br><br><br><br><br>
-   <footer class="page-footer orange">
-    <div class="container">
-      <div class="row">
-        <div class="col l6 s12">
-          <h5 class="white-text"><b>Mikofile.tk</b></h5>
-          <p class="grey-text text-lighten-4"></p>
+ <div class="section">
+	<div class="container">
+	<?php
+	if (!$pass_input) {
+	if (!$password) {
+		$pwdinput=false;
+	} else {
+		$pwdinput=true;
+	}
+	// do nothing :/
+} 	else {
+	if ($pass_input==$password) {
+		$unlock=true;
+		$pwdinput=false;
+	} else {
+		$pwdinput=true;
+		echo 'Invalid Password!';
+	}
+}
+	if (!$password) {
+		$unlock="true";
+		$pwdinput="false";
+	}
+	
+	if ($pwdinput=="true") {
+		echo '
+		<h2 class="light center">Password Protected</h2>
+		<p class="align-center"> File Protected by password, please insert password you get from uploaded user</p>
+		<br>
+		<form method="post" enctype="multipart/form-data" action="">
+		<div class="input-field col s12">
+          <input name="keydownload" name="x" id="x" type="text" class="validate">
+          <label for="keydownload">Password</label>
         </div>
-      </div>
-    </div>
-    <div class="footer-copyright">
-      <div class="container">
-      &copy; 2016 Dani Pragustia
-      </div>
-    </div>
-  </footer>
-
-
-  <!--  Scripts-->
-  <script src="js/jquery-2.1.3.min.js"></script>
-  <script src="js/materialize.js"></script>
-  <script src="js/init.js"></script>
-
-  </body>
-</html>
+		</form>
+		';
+	}
+	
+	if ($unlock=="true") {
+		echo '<h3 class="light">Your being downloaded file:</h3>
+		<h4>Filename : '.$file_name.'</h4>
+		Size : '.formatBytes($file_size).'
+		<Br>
+		Downloaded Time : 
+		';
+	}
+	
+	?>
+	</div>
+ </div>
+ </body>
+ </html>

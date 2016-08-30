@@ -28,7 +28,10 @@ include 'includes/connect.php';
 	
       <a id="logo-container" href="/" class="brand-logo"><b><font color="orange">Miko</font>file.tk</b></a>
       <ul class="right hide-on-med-and-down">
-		<li><a href="support">Dukungan</a></li>
+		  <li class="bold"><a href="upload">Upload</a></li>
+		  <li><a href="#!" onclick="showPage()">Thumbs</a></li>
+		  <li><a href="#!" onclick="showPageList()">List</a></li>
+		  <li><a href="support">Dukungan</a></li>
 		<li>
 		  
 			<?php if (isset($username)) {?><a href="#!" class="chip dropdown-button" data-activates="account-menu"><img src="<?php echo $pic;?>" alt="Contact Person"><?php echo $username;?></a> <?php } else {?><a href="login">Masuk</a><?php } ?>
@@ -50,6 +53,9 @@ include 'includes/connect.php';
 			<h3 class="orange-text light center"><?php echo $username; ?></h3>
 			</center>
 		</li>
+		<li class="bold"><a href="upload">Upload</a></li>
+		<li class="bold"><a href="#!" onclick="showPage()">Thumbs</a></li>
+		<li class="bold"><a href="#!" onclick="showPageList()">List</a></li>
 		<li class="no-padding">
           <ul class="collapsible collapsible-accordion">
             <li class="bold"><a class="collapsible-header  waves-effect waves-orange">Akun</a>
@@ -87,6 +93,7 @@ include 'includes/connect.php';
     </div>
  </center>
   </div>
+<!-- Thumbs Type (STILL BETA DOESN'T RESPONSIVE ON DESKTOP!) -->
 <div style="display:none;" id="file_content" class="section no-pad-bot animate-bottom">
 <div class="container">
 	<?php
@@ -106,7 +113,7 @@ include 'includes/connect.php';
 				echo '
 				<div class="row">
 					<div class="col s12 m4">
-						<div class="card small">';
+						<div class="card small hoverable">';
 						if (in_array($extensi,$image_array)) {
 							echo '<div class="card-image waves-effect waves-block waves-light">
 									<img class="activator" height="300px" src="'.$fullPath.'">
@@ -126,9 +133,9 @@ include 'includes/connect.php';
 							<span class="card-title grey-text text-darken-4">File Info<i class="material-icons right">Close</i></span>
 							<p>File name : '.$file_name.'</p>
 							<p>Date Upload : '.$data['datecreated'].'</p>
-							<p>Size : '.$data['size'].'</p>
+							<p>Size : '.formatBytes($data['size']).'</p>
 							<hr>
-							<button class="btn waves-effect waves-effect waves-light red">Hapus Berkas</button>
+							<button class="btn waves-effect waves-light red modal-trigger" href="#dlgDelete'.$no.'">Hapus Berkas</button>
 							<a href="'.$link_download.'" class="btn waves-effect waves-effect waves-light blue right">Download</a>
 						</div>
 					</div>
@@ -142,6 +149,70 @@ include 'includes/connect.php';
 	?>
 </div>
 </div>
+<!-- End of Thumbs -->
+
+<!-- List Type Something same like 2.0 but have more like highlighted -->
+<div style="display:none;" id="file_content_list" class="section no-pad-bot animate-bottom">
+	<div class="container">
+		<table class="table" width="100%" cellpadding="3" cellspacing="0" class="highlight responsive-table centered">
+			<thead>
+            	<tr>
+                	<th width="30">No.</th>
+                    <th>Date Upload</th>
+                    <th>File Name</th>
+                    <th>Size</th>
+					<th>Action</th>
+                </tr>
+			</thead>
+			<tbody>
+                <?php
+				$sql = mysql_query("SELECT * FROM miko_files WHERE ownerfile = '$username' ORDER BY datecreated DESC");
+				if(mysql_num_rows($sql) > 0){
+					$no = 1;
+					while($data = mysql_fetch_assoc($sql)){
+						$file_name = $data['filename'];
+						$file_url = $data['downloadlink'];
+						$link_file = $data['source'];
+						$link_download = "?u=$file_url";
+						echo '
+						<tr>
+							<td align="center">'.$no.'</td>
+							<td align="center">'.$data['datecreated'].'</td>
+							<td>'.$data['filename'].'</td>
+							<td align="center">'.formatBytes($data['size']).'</td>
+							<td align="center"><a name="download-button" id="download-button" class="btn waves-effect waves-light center" href="?u='.$link_download.'">Unduh Berkas</a>';
+						echo '<a name="register-button" id="register-button" class="btn waves-effect waves-light red modal-trigger" href="#dlgDelete'.$no.'">Hapus Berkas</a>';
+						echo '</td></tr>';
+						echo '<div id="dlgDelete'.$no.'" class="modal">
+			<div class="modal-content">
+				<h4>Hapus File<b></h4>
+				<p>
+				Berkas <b>'.$data['filename'].'</b> akan dihapus <b>Permanen</b>, Apa kamu yakin?
+				</p>
+				<form method="post" enctype="multipart/form-data" action="">
+					<input type="text" name="downloadlink" id="downloadlink" value="'.$file_url.'" style="display:none;"><br>
+			</div>
+			<div class="modal-footer">
+            <input type="submit" class="modal-action modal-close waves-effect waves-red btn-flat " value="Hapus" />
+            <a href="#!" class="modal-action modal-close waves-effect waves-blue btn-flat ">Tidak</a>
+			</form>
+		</div>
+		</div>
+		';
+		$no++;
+		}
+	}else{
+		echo '
+		<tr>
+			<td align="center" colspan="4" align="center">No Uploaded File! <a href="upload.php">Upload File</a> Now!</td>
+		</tr>
+		';
+		}
+		?>
+	</tbody>
+	</div>
+</div>
+<!-- End of List Type -->
 </div>
 </div>
   <script src="js/jquery-2.1.3.min.js"></script>
@@ -159,8 +230,13 @@ include 'includes/connect.php';
 			function showPage() {
 				document.getElementById("loader").style.display = "none";
 				document.getElementById("file_content").style.display = "block";
+				document.getElementById("file_content_list").style.display = "none";
 			}
 			
+			function showPageList() {
+				document.getElementById("file_content").style.display = "none";
+				document.getElementById("file_content_list").style.display = "block";
+			}
 			$(document).ready(function(){
 				$(".infoproduct").hide();
 			});
