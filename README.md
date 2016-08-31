@@ -1,9 +1,9 @@
+Toyosatomimi Files - A open-source File Hosting CMS
+=============
 
+![toyosatomimi-files logo](http://www.vaxza.comli.com/images/logo-toyo.png)
 
-# Current Version : 3.0.1
-
-
-Toyosatomimi Files CMS (ToyoCMS) is a CMS Files Hosting has basic power to Upload,Delete and Management user.Use HTML5,PHP CSS3 Stylesheet make ToyoCMS has simple template and powerfull CMS.
+The open-source File Hosting Content Management System. The aim of this project is provide user experience and more less time to make File Hosting without touch more coding on project. Share it and come to this contribution
 
 -----------------------------
 
